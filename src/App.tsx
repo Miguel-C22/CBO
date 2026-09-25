@@ -186,7 +186,6 @@ function ServiceCard({ num, title, desc }: { num: string; title: string; desc: s
         transition: 'box-shadow 0.2s ease, transform 0.2s ease',
       }}
     >
-      <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 14, color: '#8A6D3F', margin: '0 0 8px' }}>{num}</p>
       <h3 style={{ fontSize: 16, fontWeight: 600, color: '#262321', margin: '0 0 8px' }}>{title}</h3>
       <p style={{ fontSize: 14, lineHeight: 1.6, color: '#5A5654', margin: 0 }}>{desc}</p>
     </div>
@@ -427,8 +426,8 @@ function Footer({ navigate }: { navigate: (p: Page) => void }) {
 }
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
-function ServiceHomeCard({ icon, num, title, sub, desc, tags, linkLabel, navigate }: {
-  icon: React.ReactNode; num: string; title: string; sub: string; desc: string; tags: string; linkLabel: string; navigate: (p: Page) => void;
+function ServiceHomeCard({ icon, title, sub, desc, tags, linkLabel, navigate }: {
+  icon: React.ReactNode; title: string; sub: string; desc: string; tags: string; linkLabel: string; navigate: (p: Page) => void;
 }) {
   const [hovered, setHovered] = useState(false);
   const pageMap: Record<string, Page> = {
@@ -451,7 +450,6 @@ function ServiceHomeCard({ icon, num, title, sub, desc, tags, linkLabel, navigat
       <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#FAF7F4', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 22 }}>
         {icon}
       </div>
-      <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 14, color: '#8A6D3F', margin: '0 0 8px' }}>{num}</p>
       <h3 style={{ fontFamily: "'Source Serif 4',serif", fontSize: 22, fontWeight: 500, color: '#262321', margin: '0 0 10px' }}>{title}</h3>
       <p style={{ fontSize: 15, fontWeight: 600, color: '#262321', margin: '0 0 12px' }}>{sub}</p>
       <p style={{ fontSize: 14, lineHeight: 1.7, color: '#5A5654', margin: '0 0 16px' }}>{desc}</p>
@@ -556,21 +554,21 @@ function HomePage({ navigate, animProgress, chartVisible, onPerfInView }: {
           <div style={{ maxWidth: 1120, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px,1fr))', gap: 28 }}>
             <ServiceHomeCard
               icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A6D3F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h9l5 5v12a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" /><path d="M15 3v5h5" /><line x1="8" y1="13" x2="16" y2="13" /><line x1="8" y1="17" x2="13" y2="17" /></svg>}
-              num="01" title="Bookkeeping" sub="Know what happened."
+              title="Bookkeeping" sub="Know what happened."
               desc="Accurate, organized financial records — reconciled accounts, monthly statements, and reporting you can trust."
               tags="Monthly bookkeeping · Reconciliations · Financial statements"
               linkLabel="Explore Bookkeeping →" navigate={navigate}
             />
             <ServiceHomeCard
               icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A6D3F" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="20" x2="5" y2="12" /><line x1="12" y1="20" x2="12" y2="6" /><line x1="19" y1="20" x2="19" y2="15" /></svg>}
-              num="02" title="Business Performance" sub="Understand why."
+              title="Business Performance" sub="Understand why."
               desc="We turn your financial data into insight — what's driving results, and where the opportunities are."
               tags="Revenue & expense analysis · KPI reporting · Budget vs. actual"
               linkLabel="Explore Business Performance →" navigate={navigate}
             />
             <ServiceHomeCard
               icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A6D3F" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" /><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0A1.65 1.65 0 009 4.09V4a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" /></svg>}
-              num="03" title="Operations Advisory" sub="Decide what to do next."
+              title="Operations Advisory" sub="Decide what to do next."
               desc="Practical recommendations to improve the processes, people, and systems driving day-to-day performance."
               tags="Process improvement · Staffing & productivity · SOP development"
               linkLabel="Explore Operations Advisory →" navigate={navigate}
@@ -665,19 +663,6 @@ function AboutPage({ navigate }: { navigate: (p: Page) => void }) {
         </div>
       </section>
 
-      <Reveal style={{ background: '#FAF7F4' }}>
-        <section style={{ padding: '0 24px 70px' }}>
-          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px,1fr))', gap: 28 }}>
-            {[{ val: '8+', label: 'Years of Experience' }, { val: '3', label: 'Core Practice Areas' }, { val: '9', label: 'Areas of Expertise' }].map((s) => (
-              <div key={s.label} style={{ borderTop: '1px solid #E4DED7', paddingTop: 14 }}>
-                <p style={{ fontFamily: "'Source Serif 4',serif", fontSize: 28, fontWeight: 500, color: '#262321', margin: '0 0 4px' }}>{s.val}</p>
-                <p style={{ fontSize: 13, color: '#8F8A85', margin: 0 }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </Reveal>
-
       <Reveal>
         <section style={{ maxWidth: 1000, margin: '0 auto', padding: '70px 24px' }}>
           <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 12px', textAlign: 'center' }}>Expertise</p>
@@ -692,9 +677,9 @@ function AboutPage({ navigate }: { navigate: (p: Page) => void }) {
         <section style={{ padding: '60px 24px' }}>
           <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(3, 1fr)', gap: 0 }}>
             {[
-              { num: '01 Background', text: 'More than 8 years managing business operations, financial performance, and teams across complex, high-volume environments.', desktopPad: '0 28px 0 0', bordered: false },
-              { num: '02 Approach', text: "Understanding what's driving business performance and identifying practical opportunities to improve efficiency and profitability.", desktopPad: '0 28px', bordered: true },
-              { num: '03 Philosophy', text: 'Combining financial insight with real-world operational experience so businesses can make informed decisions.', desktopPad: '0 0 0 28px', bordered: true },
+              { num: 'Background', text: 'More than 8 years managing business operations, financial performance, and teams across complex, high-volume environments.', desktopPad: '0 28px 0 0', bordered: false },
+              { num: 'Approach', text: "Understanding what's driving business performance and identifying practical opportunities to improve efficiency and profitability.", desktopPad: '0 28px', bordered: true },
+              { num: 'Philosophy', text: 'Combining financial insight with real-world operational experience so businesses can make informed decisions.', desktopPad: '0 0 0 28px', bordered: true },
             ].map((col) => (
               <div
                 key={col.num}
@@ -730,7 +715,7 @@ function BookkeepingPage({ navigate }: { navigate: (p: Page) => void }) {
     <div data-screen-label="Bookkeeping">
       <section style={{ background: '#FAF7F4', padding: '132px 24px 70px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 16px' }}>01 · Bookkeeping</p>
+          <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 16px' }}>Bookkeeping</p>
           <h1 style={{ fontFamily: "'Source Serif 4',serif", fontSize: 38, fontWeight: 500, color: '#262321', margin: '0 0 20px' }}>
             Bookkeeping that gives you <span style={{ fontStyle: 'italic' }}>clarity.</span>
           </h1>
@@ -782,7 +767,7 @@ function BusinessPerformancePage({ navigate }: { navigate: (p: Page) => void }) 
     <div data-screen-label="Business Performance">
       <section style={{ background: '#FAF7F4', padding: '132px 24px 70px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 16px' }}>02 · Business Performance</p>
+          <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 16px' }}>Business Performance</p>
           <h1 style={{ fontFamily: "'Source Serif 4',serif", fontSize: 38, fontWeight: 500, color: '#262321', margin: '0 0 20px' }}>
             Go beyond the <span style={{ fontStyle: 'italic' }}>numbers.</span>
           </h1>
@@ -874,7 +859,7 @@ function OperationsAdvisoryPage({ navigate }: { navigate: (p: Page) => void }) {
     <div data-screen-label="Operations Advisory">
       <section style={{ background: '#FAF7F4', padding: '132px 24px 70px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 16px' }}>03 · Operations Advisory</p>
+          <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 16px' }}>Operations Advisory</p>
           <h1 style={{ fontFamily: "'Source Serif 4',serif", fontSize: 38, fontWeight: 500, color: '#262321', margin: '0 0 20px' }}>
             Improve how your business <span style={{ fontStyle: 'italic' }}>operates.</span>
           </h1>
