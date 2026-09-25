@@ -211,7 +211,7 @@ function Header({ page, isMobile, mobileNavOpen, navigate, toggleMobileNav, clos
             onClick={() => navigate('home')}
             style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flexShrink: 0, justifySelf: 'start' }}
           >
-            <img src="/images/CBO-LOGO-ONLY.png" alt="CBO Group" style={{ height: 24, width: 'auto', display: 'block' }} />
+            <img src="/images/CBO-logo-brown.png" alt="CBO Group" style={{ height: 24, width: 'auto', display: 'block' }} />
             <span style={{ fontFamily: "'Source Serif 4',serif", fontSize: 16, fontWeight: 500, color: '#262321' }}>CBO Group</span>
           </div>
 
