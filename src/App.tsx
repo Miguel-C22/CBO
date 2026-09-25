@@ -402,7 +402,7 @@ function Footer({ navigate }: { navigate: (p: Page) => void }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 32, marginBottom: 28 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              <img src="/images/CBO-LOGO-ONLY.png" alt="CBO Group" style={{ height: 28, width: 'auto', filter: 'brightness(0) invert(1)' }} />
+              <img src="/images/CBO-logo.png" alt="CBO Group" style={{ height: 28, width: 'auto' }} />
               <span style={{ fontFamily: "'Source Serif 4',serif", fontSize: 18, fontWeight: 500, color: '#FFFFFF' }}>CBO Group</span>
             </div>
             <p style={{ fontSize: 13, color: '#9C9691', margin: 0 }}>Bookkeeping · Business Performance · Operations Advisory</p>
