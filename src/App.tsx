@@ -172,7 +172,7 @@ const chartOptions = {
 } as unknown as AgChartOptions;
 
 // ─── Service Card ─────────────────────────────────────────────────────────────
-function ServiceCard({ num, title, desc }: { num: string; title: string; desc: string }) {
+function ServiceCard({ title, desc }: { num: string; title: string; desc: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
