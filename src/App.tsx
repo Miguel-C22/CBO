@@ -996,7 +996,11 @@ function ContactPage() {
 
 // ─── App Root ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage] = useState<Page>('home');
+  const [page, setPage] = useState<Page>(() => {
+    const saved = sessionStorage.getItem('cbo-page') as Page | null;
+    const valid: Page[] = ['home', 'about', 'bookkeeping', 'business-performance', 'operations-advisory', 'contact'];
+    return saved && valid.includes(saved) ? saved : 'home';
+  });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1080);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [countUpActive, setCountUpActive] = useState(false);
@@ -1011,6 +1015,7 @@ export default function App() {
 
   const navigate = useCallback((p: Page) => {
     setPage(p);
+    sessionStorage.setItem('cbo-page', p);
     setMobileNavOpen(false);
     window.scrollTo(0, 0);
     if (p === 'home') {
