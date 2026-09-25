@@ -1,0 +1,11 @@
+* { box-sizing: border-box; }
+body { margin: 0; -webkit-font-smoothing: antialiased; }
+#root { min-height: 100vh; }
+a { color: #8A6D3F; text-decoration: none; }
+a:hover { color: #262321; }
+::selection { background: #E7D9C2; }
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: 2px solid #8A6D3F;
+  outline-offset: 2px;
+}
+input[type="range"] { accent-color: #8A6D3F; }
