@@ -79,6 +79,17 @@ const opsServices = numbered([
 
 const helpOptions = ['Bookkeeping', 'Business Performance', 'Operations Advisory', 'Not sure yet / General inquiry'];
 
+// ─── Mobile hook ─────────────────────────────────────────────────────────────
+function useIsMobile(bp = 768) {
+  const [mobile, setMobile] = useState(() => window.innerWidth < bp);
+  useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < bp);
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, [bp]);
+  return mobile;
+}
+
 // ─── Reveal wrapper component ─────────────────────────────────────────────────
 function Reveal({ children, style: extra }: { children: React.ReactNode; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -222,14 +233,26 @@ function Header({ page, isMobile, mobileNavOpen, navigate, toggleMobileNav, clos
             )}
             {isMobile && (
               <button
-                aria-label="Open menu"
+                aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
                 onClick={toggleMobileNav}
                 style={{ background: 'none', border: 'none', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
               >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                  <span style={{ width: 20, height: 2, background: '#262321', display: 'block', borderRadius: 1 }} />
-                  <span style={{ width: 20, height: 2, background: '#262321', display: 'block', borderRadius: 1 }} />
-                  <span style={{ width: 20, height: 2, background: '#262321', display: 'block', borderRadius: 1 }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 5, position: 'relative' }}>
+                  <span style={{
+                    width: 20, height: 2, background: '#262321', display: 'block', borderRadius: 1,
+                    transform: mobileNavOpen ? 'translateY(7px) rotate(45deg)' : 'none',
+                    transition: 'transform 0.28s cubic-bezier(0.32,0.72,0,1)',
+                  }} />
+                  <span style={{
+                    width: 20, height: 2, background: '#262321', display: 'block', borderRadius: 1,
+                    opacity: mobileNavOpen ? 0 : 1,
+                    transition: 'opacity 0.18s ease',
+                  }} />
+                  <span style={{
+                    width: 20, height: 2, background: '#262321', display: 'block', borderRadius: 1,
+                    transform: mobileNavOpen ? 'translateY(-7px) rotate(-45deg)' : 'none',
+                    transition: 'transform 0.28s cubic-bezier(0.32,0.72,0,1)',
+                  }} />
                 </div>
               </button>
             )}
@@ -237,47 +260,67 @@ function Header({ page, isMobile, mobileNavOpen, navigate, toggleMobileNav, clos
         </div>
       </header>
 
-      {/* Mobile Nav Overlay */}
+      {/* Mobile Nav Backdrop */}
       <div
         onClick={closeMobileNav}
         style={{
-          position: 'fixed', inset: 0, background: 'transparent', zIndex: 50,
-          opacity: mobileNavOpen ? 1 : 0, pointerEvents: mobileNavOpen ? 'auto' : 'none',
-          transition: 'opacity 0.25s ease',
+          position: 'fixed', inset: 0, zIndex: 50,
+          background: 'rgba(38,35,33,0.18)',
+          backdropFilter: mobileNavOpen ? 'blur(4px)' : 'blur(0px)',
+          opacity: mobileNavOpen ? 1 : 0,
+          pointerEvents: mobileNavOpen ? 'auto' : 'none',
+          transition: 'opacity 0.3s ease, backdrop-filter 0.3s ease',
         }}
       />
+
+      {/* Mobile Nav Panel */}
       <div style={{
         position: 'fixed', top: 18, left: 20, right: 20, zIndex: 51,
-        background: '#FFFFFF', borderRadius: 28, boxShadow: '0 16px 44px rgba(38,35,33,0.16)',
-        opacity: mobileNavOpen ? 1 : 0, pointerEvents: mobileNavOpen ? 'auto' : 'none',
-        transform: mobileNavOpen ? 'translateY(0)' : 'translateY(-10px)',
-        transition: 'opacity 0.25s ease, transform 0.25s ease', overflow: 'hidden',
+        background: 'rgba(255,255,255,0.82)',
+        backdropFilter: 'blur(24px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+        border: '1px solid rgba(255,255,255,0.6)',
+        borderRadius: 28,
+        boxShadow: '0 20px 60px rgba(38,35,33,0.18), 0 4px 16px rgba(38,35,33,0.08)',
+        opacity: mobileNavOpen ? 1 : 0,
+        pointerEvents: mobileNavOpen ? 'auto' : 'none',
+        transform: mobileNavOpen ? 'translateY(0) scale(1)' : 'translateY(-14px) scale(0.96)',
+        transformOrigin: 'top center',
+        transition: 'opacity 0.3s cubic-bezier(0.32,0.72,0,1), transform 0.35s cubic-bezier(0.32,0.72,0,1)',
+        overflow: 'hidden',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 16px' }}>
-          <span style={{ fontFamily: "'Source Serif 4',serif", fontSize: 18, fontWeight: 500, color: '#262321' }}>CBO Group</span>
-          <button
-            aria-label="Close menu"
-            onClick={closeMobileNav}
-            style={{ background: 'none', border: 'none', fontSize: 24, color: '#262321', cursor: 'pointer', lineHeight: 1, padding: 4 }}
-          >&times;</button>
-        </div>
-        <div style={{ borderTop: '1px solid #EDE9E3' }}>
-          {NAV_ITEMS.map((item) => (
+        {/* Nav items */}
+        <div style={{ padding: '8px 8px 0' }}>
+          {NAV_ITEMS.map((item, i) => (
             <button
               key={item.key}
               onClick={() => { navigate(item.key); closeMobileNav(); }}
               style={{
-                display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none',
-                borderBottom: '1px solid #EDE9E3', padding: '16px 24px',
-                fontFamily: "'Work Sans',sans-serif", fontSize: 16, fontWeight: 500, color: '#3A3532', cursor: 'pointer',
+                display: 'block', width: '100%', textAlign: 'left', background: page === item.key ? 'rgba(138,109,63,0.08)' : 'none',
+                border: 'none', borderRadius: 14,
+                padding: '14px 20px',
+                fontFamily: "'Work Sans',sans-serif", fontSize: 16, fontWeight: page === item.key ? 600 : 500,
+                color: page === item.key ? '#8A6D3F' : '#3A3532', cursor: 'pointer',
+                opacity: mobileNavOpen ? 1 : 0,
+                transform: mobileNavOpen ? 'translateY(0)' : 'translateY(-6px)',
+                transition: `opacity 0.22s ease, transform 0.22s ease, background 0.15s ease`,
+                transitionDelay: mobileNavOpen ? `${0.08 + i * 0.04}s` : '0s',
               }}
             >{item.label}</button>
           ))}
         </div>
-        <div style={{ padding: '20px 24px 24px' }}>
+
+        {/* CTA */}
+        <div style={{
+          padding: '12px 16px 16px',
+          opacity: mobileNavOpen ? 1 : 0,
+          transform: mobileNavOpen ? 'translateY(0)' : 'translateY(-4px)',
+          transition: 'opacity 0.22s ease, transform 0.22s ease',
+          transitionDelay: mobileNavOpen ? `${0.08 + NAV_ITEMS.length * 0.04}s` : '0s',
+        }}>
           <button
             onClick={() => { navigate('contact'); closeMobileNav(); }}
-            style={{ width: '100%', background: '#262321', color: '#FFFFFF', border: 'none', borderRadius: 999, padding: '15px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+            style={{ width: '100%', background: '#262321', color: '#FFFFFF', border: 'none', borderRadius: 14, padding: '15px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer', letterSpacing: '0.01em' }}
           >Contact Us</button>
         </div>
       </div>
@@ -418,7 +461,48 @@ function ServiceHomeCard({ icon, num, title, sub, desc, tags, linkLabel, navigat
   );
 }
 
-function HomePage({ navigate, animProgress, chartVisible }: { navigate: (p: Page) => void; animProgress: number; chartVisible: boolean }) {
+// Wraps the performance preview section — single observer drives fade-in + count-up + chart together
+function PerformanceSection({ children, onVisible }: { children: React.ReactNode; onVisible: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  const firedRef = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !firedRef.current) {
+          firedRef.current = true;
+          setVisible(true);
+          onVisible();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [onVisible]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        background: '#FFFFFF',
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(28px)',
+        transition: 'opacity 0.8s ease, transform 0.8s ease',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function HomePage({ navigate, animProgress, chartVisible, onPerfInView }: {
+  navigate: (p: Page) => void; animProgress: number; chartVisible: boolean; onPerfInView: () => void;
+}) {
   const [heroBtn, setHeroBtn] = useState(false);
   const [darkBtn, setDarkBtn] = useState(false);
 
@@ -496,9 +580,9 @@ function HomePage({ navigate, animProgress, chartVisible }: { navigate: (p: Page
       </Reveal>
 
       {/* Business Performance Preview */}
-      <Reveal style={{ background: '#FFFFFF' }}>
+      <PerformanceSection onVisible={onPerfInView}>
         <section style={{ padding: '100px 24px' }}>
-          <div id="home-performance-anchor" style={{ maxWidth: 1080, margin: '0 auto' }}>
+          <div style={{ maxWidth: 1080, margin: '0 auto' }}>
             <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 12px', textAlign: 'center' }}>Business Performance</p>
             <h2 style={{ fontFamily: "'Source Serif 4',serif", fontSize: 32, fontWeight: 500, color: '#262321', margin: '0 0 56px', textAlign: 'center' }}>See what your numbers can tell you.</h2>
             <div style={{ display: 'flex', gap: 56, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -528,7 +612,7 @@ function HomePage({ navigate, animProgress, chartVisible }: { navigate: (p: Page
             </div>
           </div>
         </section>
-      </Reveal>
+      </PerformanceSection>
 
       {/* Why CBO / Chase */}
       <Reveal style={{ background: '#FAF7F4' }}>
@@ -565,11 +649,12 @@ function HomePage({ navigate, animProgress, chartVisible }: { navigate: (p: Page
 
 // ─── About Page ───────────────────────────────────────────────────────────────
 function AboutPage({ navigate }: { navigate: (p: Page) => void }) {
+  const mobile = useIsMobile();
   return (
     <div data-screen-label="About">
       <section style={{ background: '#FAF7F4', padding: '132px 24px 60px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap' }}>
-          <img src="/images/PFP.jpg" alt="Chase Bronkhorst" style={{ width: 230, height: 290, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }} />
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: mobile ? 'center' : 'center', flexDirection: mobile ? 'column' : 'row', gap: 56, flexWrap: 'wrap' }}>
+          <img src="/images/PFP.jpg" alt="Chase Bronkhorst" style={{ width: mobile ? '100%' : 230, maxWidth: 230, height: 290, objectFit: 'cover', borderRadius: 8, flexShrink: 0, alignSelf: mobile ? 'center' : undefined }} />
           <div style={{ flex: '1 1 380px', minWidth: 280 }}>
             <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 15, color: '#8A6D3F', margin: '0 0 14px' }}>About CBO Group</p>
             <h1 style={{ fontFamily: "'Source Serif 4',serif", fontSize: 34, fontWeight: 500, color: '#262321', margin: '0 0 4px' }}>Chase Bronkhorst</h1>
@@ -605,13 +690,20 @@ function AboutPage({ navigate }: { navigate: (p: Page) => void }) {
 
       <Reveal style={{ background: '#FAF7F4' }}>
         <section style={{ padding: '60px 24px' }}>
-          <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px,1fr))', gap: 0 }}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(3, 1fr)', gap: 0 }}>
             {[
-              { num: '01 Background', text: 'More than 8 years managing business operations, financial performance, and teams across complex, high-volume environments.', pl: '0 28px 0 0', bl: false },
-              { num: '02 Approach', text: "Understanding what's driving business performance and identifying practical opportunities to improve efficiency and profitability.", pl: '0 28px', bl: true },
-              { num: '03 Philosophy', text: 'Combining financial insight with real-world operational experience so businesses can make informed decisions.', pl: '0 0 0 28px', bl: true },
+              { num: '01 Background', text: 'More than 8 years managing business operations, financial performance, and teams across complex, high-volume environments.', desktopPad: '0 28px 0 0', bordered: false },
+              { num: '02 Approach', text: "Understanding what's driving business performance and identifying practical opportunities to improve efficiency and profitability.", desktopPad: '0 28px', bordered: true },
+              { num: '03 Philosophy', text: 'Combining financial insight with real-world operational experience so businesses can make informed decisions.', desktopPad: '0 0 0 28px', bordered: true },
             ].map((col) => (
-              <div key={col.num} style={{ padding: col.pl, borderLeft: col.bl ? '1px solid #E4DED7' : 'none' }}>
+              <div
+                key={col.num}
+                style={{
+                  padding: mobile ? '20px 0' : col.desktopPad,
+                  borderLeft: !mobile && col.bordered ? '1px solid #E4DED7' : 'none',
+                  borderTop: mobile && col.bordered ? '1px solid #E4DED7' : 'none',
+                }}
+              >
                 <p style={{ fontFamily: "'Source Serif 4',serif", fontStyle: 'italic', fontSize: 14, color: '#8A6D3F', margin: '0 0 10px' }}>{col.num}</p>
                 <p style={{ fontSize: 15, lineHeight: 1.7, color: '#5A5654', margin: 0 }}>{col.text}</p>
               </div>
@@ -909,9 +1001,13 @@ export default function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [countUpActive, setCountUpActive] = useState(false);
   const [chartVisible, setChartVisible] = useState(false);
-  const chartObserverRef = useRef<IntersectionObserver | null>(null);
 
   const animProgress = useCountUp(countUpActive);
+
+  const onPerfInView = useCallback(() => {
+    setCountUpActive(true);
+    setChartVisible(true);
+  }, []);
 
   const navigate = useCallback((p: Page) => {
     setPage(p);
@@ -920,32 +1016,8 @@ export default function App() {
     if (p === 'home') {
       setCountUpActive(false);
       setChartVisible(false);
-      setTimeout(() => setCountUpActive(true), 50);
-    } else {
-      setChartVisible(false);
-      chartObserverRef.current?.disconnect();
     }
   }, []);
-
-  useEffect(() => { setCountUpActive(true); }, []);
-
-  useEffect(() => {
-    if (page !== 'home') return;
-    setChartVisible(false);
-    const setup = () => {
-      const el = document.getElementById('home-performance-anchor');
-      if (!el) return;
-      chartObserverRef.current?.disconnect();
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.85) { setChartVisible(true); return; }
-      chartObserverRef.current = new IntersectionObserver((entries) => {
-        entries.forEach((e) => { if (e.isIntersecting) { setChartVisible(true); chartObserverRef.current?.disconnect(); } });
-      }, { threshold: 0.15 });
-      chartObserverRef.current.observe(el);
-    };
-    const t = setTimeout(setup, 60);
-    return () => { clearTimeout(t); chartObserverRef.current?.disconnect(); };
-  }, [page]);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 1080);
@@ -962,7 +1034,7 @@ export default function App() {
         closeMobileNav={() => setMobileNavOpen(false)}
       />
       <main style={{ flex: 1 }}>
-        {page === 'home' && <HomePage navigate={navigate} animProgress={animProgress} chartVisible={chartVisible} />}
+        {page === 'home' && <HomePage navigate={navigate} animProgress={animProgress} chartVisible={chartVisible} onPerfInView={onPerfInView} />}
         {page === 'about' && <AboutPage navigate={navigate} />}
         {page === 'bookkeeping' && <BookkeepingPage navigate={navigate} />}
         {page === 'business-performance' && <BusinessPerformancePage navigate={navigate} />}
